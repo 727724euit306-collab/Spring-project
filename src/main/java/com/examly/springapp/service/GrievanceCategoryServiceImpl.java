@@ -1,7 +1,6 @@
 package com.examly.springapp.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,21 +26,20 @@ public class GrievanceCategoryServiceImpl implements GrievanceCategoryService {
 
     @Override
     public GrievanceCategory getCategoryById(Long id) {
-        Optional<GrievanceCategory> opt = grievanceCategoryRepository.findById(id);
-        return opt.orElse(null);
+        return grievanceCategoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("GrievanceCategory not found"));
     }
 
     @Override
     public GrievanceCategory updateCategory(Long id, GrievanceCategory category) {
-        Optional<GrievanceCategory> opt = grievanceCategoryRepository.findById(id);
-        if (opt.isPresent()) {
-            GrievanceCategory existing = opt.get();
-            existing.setCategoryName(category.getCategoryName());
-            existing.setDescription(category.getDescription());
-            existing.setDepartment(category.getDepartment());
-            return grievanceCategoryRepository.save(existing);
-        }
-        return null;
+        GrievanceCategory existing = grievanceCategoryRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("GrievanceCategory not found"));
+
+        existing.setCategoryName(category.getCategoryName());
+        existing.setDescription(category.getDescription());
+        existing.setDepartment(category.getDepartment());
+
+        return grievanceCategoryRepository.save(existing);
     }
 
     @Override
